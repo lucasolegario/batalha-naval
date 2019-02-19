@@ -1,18 +1,18 @@
 from random import randint
-
+#Matriz dos repectivos jogadores
 campo1 = []
 campo2 = []
-
+#Nome dos usuarios
 p1 = ""
 p2 = ""
-
+#Mariz de exibição
 tab_p1 = []
 tab_p2 = []
-
+#contador de acertos do jogador1
 contador_s_p1 = 0
 contador_c_p1 = 0
 contador_p_p1 = 0
-
+#contador de acertos do jogador2
 contador_s_p2 = 0
 contador_c_p2 = 0
 contador_p_p2 = 0
@@ -27,7 +27,7 @@ def menu():
 # Gerando a Matriz
 def gerar_matriz(c):
     for i in range(0,10):
-        c.append(['']*10)
+        c.append([' ']*10)
            
 # Imprimindo o Tabuleiro
 def tabuleiro(c):
@@ -42,22 +42,140 @@ def tabuleiro(c):
             print(" {:^3}|{:^3}|{:^3}|{:^3}|{:^3}|{:^3}|{:^3}|{:^3}|{:^3}|{:^3}|{:^3}|".format(x,i[0],i[1],i[2],i[3],i[4],i[5],i[6],i[7],i[8],i[9]))
     print("-"*45)
 
-# Inserindo a Frota no Tabuleiro
-def inserir(c,jogador):
-    print("=-="*20)  
-    print(f"Olá {jogador}, escolha sua frota:\n- Porta Avião(p)\n- Cruzador(c)\n- Submarino(s)")
-    frota = input("Frota: ").upper()
-    linha = int(randint(0,9))    
-    coluna = int(randint(0,9))
-    
-#terá que ser criada uma repetição aqui    
-    if frota == "S":             
-        c[linha][coluna] = frota
-    if frota == "P":
-        c[linha][coluna] = frota
-    if frota == "C":
-        c[linha][coluna] = frota
+#Função do Submarino
+def submarino(c):
+  lin = randint(0,10)
+  col = randint(0,10)
+  vert = randint(0,1)
 
+  try:
+    #Verifica se posição é Vertical
+    if vert == 1:
+      #Verifica se posição Vertical está Vazia
+      if c[lin][col] == " " and c[lin][col+1] == " ":
+          for i in range(lin,lin+1):
+            for j in range(col,col+2):
+              c[i][j] = 'S'
+    
+    #Se posição é Horizontal
+    else:
+      #Verifica se posição Horizontal está vazia
+      if c[lin][col] == " " and c[lin+1][col] == " ":
+          for i in range(lin,lin+2):
+            for j in range(col,col+1):
+              c[i][j] = 'S'
+  except:
+    submarino(c)
+
+  return c
+  
+#Função do Cruzador
+def cruzador(c):
+  lin = randint(0,10)
+  col = randint(0,10)
+  vert = randint(0,1)
+
+  try:
+    #Verifica se posição é Vertical
+    if vert == 1:
+      if c[lin][col] == " " and c[lin][col+1] == " " and c[lin][col+2] == " ":
+        for i in range(lin,lin+1):
+          for j in range(col,col+3):
+            c[i][j] = 'C'
+    #Se posição é Horizontal
+    else:
+      #Verifica se posição Horizontal está vazia
+      if c[lin][col] == " " and c[lin+1][col] == " " and c[lin+2][col] == " ":
+        for i in range(lin,lin+3):
+          for j in range(col,col+1):
+            c[i][j] = 'C'
+  except:
+    cruzador(c)
+
+  return c
+
+#Função do Porta Avião
+def porta_aviao(c):
+  lin = randint(0,10)
+  col = randint(0,10)
+  vert = randint(0,1)
+
+  try:
+    #Verifica se posição é Vertical
+    if vert == 1:
+      if c[lin][col] == " " and c[lin][col+1] == " " and c[lin][col+2] == " "  and c[lin][col+3] == " ":
+        for i in range(lin,lin+1):
+          for j in range(col,col+4):
+            c[i][j] = 'P'
+    #Se posição é Horizontal
+    else:
+      #Verifica se posição Horizontal está vazia
+      if c[lin][col] == " " and c[lin+1][col] == " " and c[lin+2][col] == " " and c[lin+3][col] == " ":
+        for i in range(lin,lin+4):
+          for j in range(col,col+1):
+            c[i][j] = 'P'
+  except:
+    porta_aviao(c) 
+
+  return c
+  
+# Inserindo a Frota no Tabuleiro
+def inserir(c,jogador,op):
+    print("=-="*20)   
+
+    if op == "S":
+
+      porta_aviao(c)
+      
+      for i in range(2): 
+        cruzador(c)
+
+      for i in range(3): 
+        submarino(c)
+         
+    else:
+      print(f" {jogador}, Escolha sua frota: \n")
+      print(" (1) Porta Avião min 0 - 1 max\n (2) Cruzador min 0 - 2 max\n (3) Submarino min 1 - 3 max\n")
+      print("Digite 0 para Finalizar a Escolha de Frotas")
+
+      qtd_frota = 0
+      qtd_p = 0
+      qtd_c = 0
+      qtd_s = 0
+      
+      #Usuario escolhe sua frota personalizada
+      while qtd_frota < 6:
+        print("=-="*20) 
+        opt = int(input("Escolha uma Opção: "))
+        if opt == 0:
+            break        
+        if opt == 1 and qtd_p < 1:
+            if qtd_p == 0:  
+                porta_aviao(c)
+                qtd_p += 1
+            else:
+                print("=-="*20) 
+                print("!!! Você adicinou a quantidade Máxima de Porta Aviões !!!")             
+        if opt == 2 and qtd_c < 2:
+            if qtd_c <2:  
+                cruzador(c)
+                qtd_c +=1
+            else:
+                print("=-="*20) 
+                print("!!! Você adicionou a quantidade Máxima de Cruzadores !!!")                
+        if opt == 3 and qtd_s < 3:
+            if qtd_s < 3:  
+                submarino(c)
+                qtd_s +=1
+            else:
+                print("=-="*20) 
+                print("!!! Você adicinou a quantidade Máxima de  Submarinos !!!")                
+        print("=-="*20)  
+        print(f" Frotas Adicionadas\n- Porta Avião {qtd_p}\n- Cruzador {qtd_c}\n- Submarino {qtd_s}")
+        qtd_frota = (qtd_p + qtd_c + qtd_s)
+        
+          
+#Exibir pontuação
 def exibe_pontuacao():
     #jogador 1
     print("=-="*20) 
@@ -80,7 +198,7 @@ def coord_atk(cam,jogador,tab):
     global contador_p_p2
     
     print("=-="*19)
-    print(f"Sua vez {jogador}, informe as Coordenadas do Ataque!")
+    print(f"Sua vez {jogador}, Informe as Coordenadas do Ataque!")
 
     lin = int(input("Linha 1-10: "))
     col = str(input("Coluna A-J: ").upper())
@@ -129,32 +247,32 @@ def coord_atk(cam,jogador,tab):
     if lin == 10:
         lin = 9
 
-    if (cam[lin][col] == "") or (cam[lin][col] == "*"):
+    if (cam[lin][col] == " ") or (cam[lin][col] == "*"):
         #tab[lin].insert(col,hitF)
         cam[lin][col] = "*"   
         tab[lin][col] = "*"
-        exibe_pontuacao()    
-
+        exibe_pontuacao()  
         return False
     else:
         # conta acerto de submarino
         if cam[lin][col] == "P":
             # altera na matriz de exibição
-            tab[lin][col] == "P" 
+            tab[lin][col] = "P" 
             # adiciona ao contador do player que acertou
             if jogador == p1:
                 contador_p_p1 += 1
             elif jogador == p2:
                 contador_p_p2 += 1
         elif cam[lin][col] == "C":
-            tab[lin][col] == "C" 
+            tab[lin][col] = "C" 
             # adiciona ao contador do player que acertou
+      
             if jogador == p1:
                 contador_c_p1 += 1
             elif jogador == p2:
                 contador_c_p2 += 1
         elif cam[lin][col] == "S":
-            tab[lin][col] == "S" 
+            tab[lin][col] = "S" 
             # adiciona ao contador do player que acertou
             if jogador == p1:
                 contador_s_p1 += 1
@@ -162,7 +280,7 @@ def coord_atk(cam,jogador,tab):
                 contador_s_p2 += 1
 
         # transforma campo indisponivel na matriz de controle
-        cam[lin][col] = "*"
+        cam[lin][col] = "*"       
         exibe_pontuacao()
         return True 
 
@@ -185,18 +303,52 @@ def main():
         print("=-="*20)
         p1 = input("Jogador 1 informe seu Nome: ").capitalize()
         p2 = input("Jogador 2 informe seu Nome: ").capitalize()
+      
+        print("=-="*20)
+        op = input("Deseja jogar com a Frota Máxima? (s/n): ").upper()
 
         #Jogador 1 Setup
         gerar_matriz(campo1)
-        gerar_matriz(tab_p1)
-        for i in range(3):
-            inserir(campo1,p1)
+        gerar_matriz(tab_p1)        
+        inserir(campo1,p1,op)
 
         #Jogador 2 Setup
         gerar_matriz(campo2)
-        gerar_matriz(tab_p2)
-        for i in range(3):
-            inserir(campo2,p2)
+        gerar_matriz(tab_p2)        
+        inserir(campo2,p2,op)
+
+
+        qtd_s_p1 = 0
+        qtd_c_p1 = 0
+        qtd_p_p1 = 0
+        qtd_s_p2 = 0
+        qtd_c_p2 = 0
+        qtd_p_p2 = 0
+
+
+        for linha in campo1:
+            for coluna in linha:
+                if "S" in coluna:
+                    qtd_s_p1 += 1
+                if "C" in coluna:
+                    qtd_c_p1 += 1
+                if "P" in coluna:
+                    qtd_p_p1 += 1
+        
+        for linha in campo2:
+            for coluna in linha:
+                if "S" in coluna:
+                    qtd_s_p2 += 1
+                if "C" in coluna:
+                    qtd_c_p2 += 1
+                if "P" in coluna:
+                    qtd_p_p2 += 1
+
+        #Soma o número de frotas contidos na Matriz do Jogador 1
+        soma_p1 = (qtd_c_p1 + qtd_s_p1 + qtd_p_p1)
+
+        #Soma o número de frotas contidos na Matriz do Jogador 2
+        soma_p2 = (qtd_c_p2 + qtd_s_p2 + qtd_p_p2)         
 
         #Modo de Testes
         print("=-="*20)
@@ -232,7 +384,7 @@ def main():
                     print(f" Fogo! Bela jogada {p1} você acertou e continua jogando! ")
                     print("=-="*19)
 
-                if qtde_frotas_p1() == numero_frotas:
+                if qtde_frotas_p1() == soma_p2:
                     ganhou = 1
                     
             #Jogador 2 Loop
@@ -254,19 +406,20 @@ def main():
                     print(f" Fogo! Bela jogada {p2} você acertou e continua jogando! ")
                     print("=-="*19)
 
-                if qtde_frotas_p1() == numero_frotas:
+                if qtde_frotas_p1() == soma_p2:
                     ganhou = 1
 
-            if qtde_frotas_p1() == numero_frotas:
+            if qtde_frotas_p1() == soma_p2:
                 print(f"Parabéns { p1 }, você venceu!")
                 break
-            elif qtde_frotas_p2() == numero_frotas:
+            elif qtde_frotas_p2() == soma_p1:
                 print(f"Parabéns { p2 }, você venceu!")
                 break
     
     #Opção Créditos
     if opcao == 2:
         print("\nEste jogo foi Desenvolvido por: \n- Lucas Olegário\n- Messias Souza\n- Andréia Berto \n")
+        return main
         
     
 main()
