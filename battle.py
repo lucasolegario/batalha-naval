@@ -419,7 +419,7 @@ def main():
     #Opção Créditos
     if opcao == 2:
         print("\nEste jogo foi Desenvolvido por: \n- Lucas Olegário\n- Messias Souza\n- Andréia Berto \n")
-        return main
+        return main()
         
     
 main()
